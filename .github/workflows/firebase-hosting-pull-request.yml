@@ -9,9 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESERVATION_APP_742C4 }}'
-          projectId: reservation-app-742c4
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_SILKEN_ORDER_386923 }}'
+          projectId: silken-order-386923
