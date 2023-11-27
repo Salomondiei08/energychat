@@ -71,7 +71,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Future<String> chatAndAnwser() async {
     try {
       final url = Uri.parse(
-        "http://127.0.0.1:8000/question/",
+        "https://chatproject-4hh5r2wlaq-uc.a.run.app/question/",
       );
       var headers = {
         'accept': 'application/json',
@@ -197,7 +197,10 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Affiba'),
+        title: const Text(
+          'Affiba',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.orange,
       ),
       body: SafeArea(

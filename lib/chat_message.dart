@@ -50,7 +50,7 @@ class _ChatMessageState extends State<ChatMessage>
                                   .copyWith(fontWeight: FontWeight.bold),
                             )
                           : Text(
-                              'Energy Bot',
+                              'Affiba',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!
@@ -99,7 +99,7 @@ class _ChatMessageState extends State<ChatMessage>
                                   .copyWith(fontWeight: FontWeight.bold),
                             )
                           : Text(
-                              'Energy Bot',
+                              'Affiba',
                               style: Theme.of(context)
                                   .textTheme
                                   .titleMedium!

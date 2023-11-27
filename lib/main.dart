@@ -24,9 +24,23 @@ class GPTChatApp extends StatelessWidget {
       initialRoute:
           FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/',
       debugShowCheckedModeBanner: false,
-      title: 'GPT Chat Example',
+      title: 'Affiba Chat',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: ButtonStyle(
+            padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.all(24),
+            ),
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.orange),
+            foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          ),
+        ),
+        primarySwatch: Colors.orange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       routes: {
