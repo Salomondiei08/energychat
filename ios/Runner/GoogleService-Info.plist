@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyAYjX4rlKQXiCEk4KxTdMTwR4SQfeiYDEc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>52198056977</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.energychat</string>
+	<key>PROJECT_ID</key>
+	<string>silken-order-386923</string>
+	<key>STORAGE_BUCKET</key>
+	<string>silken-order-386923.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:52198056977:ios:9d5d953bdaf5d69fef3db0</string>
+</dict>
+</plist>

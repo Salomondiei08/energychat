@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "52198056977",
+    "project_id": "silken-order-386923",
+    "storage_bucket": "silken-order-386923.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52198056977:android:27ef1892c0401982ef3db0",
+        "android_client_info": {
+          "package_name": "com.example.test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCKzb5xQEYwnL0a9nrPupz7mY3t1oanRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

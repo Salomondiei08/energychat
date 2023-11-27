@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:energychat/chat_message.dart';
+import 'package:energychat/screens/pdf_view.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class ChatScreen extends StatefulWidget {
@@ -17,14 +21,93 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final TextEditingController textEditingController = TextEditingController();
   final List<ChatMessage> messageList = <ChatMessage>[];
 
-  final openAI = OpenAI.instance.build(
-      token: "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",
-      baseOption: HttpSetup(receiveTimeout: const Duration(seconds: 5)),
-      enableLog: true);
-
   late stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = '';
+
+  Future<void> displayFile(String text) async {
+    final fileUrl = await downloadPdfFile(text);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: ((context) => PDFView(
+              url: fileUrl!,
+            )),
+      ),
+    );
+  }
+
+  Future<String?> downloadPdfFile(String text) async {
+    try {
+      final url = Uri.parse(
+        "https://chatproject-4hh5r2wlaq-uc.a.run.app/pdf/$text",
+      );
+      var headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      };
+
+      var response = await post(
+        url,
+        headers: headers,
+      );
+
+      debugPrint("La requete a ete lance, voici le contenu : ${response.body}");
+      if (response.statusCode == 200) {
+        final responseData = json.decode(utf8.decode(response.body.codeUnits));
+        debugPrint(responseData.toString());
+
+        debugPrint(
+            "La requete a reussis, voici le contenu de la reponse : $responseData");
+        return responseData;
+      } else {
+        var responseData = json.decode(response.body);
+        debugPrint("La requete a echoue, voici le contenu : $responseData");
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  Future<String> chatAndAnwser() async {
+    try {
+      final url = Uri.parse(
+        "http://127.0.0.1:8000/question/",
+      );
+      var headers = {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+        "Access-Control-Allow-Headers": "*"
+      };
+
+      var data = [];
+
+      for (var element in messageHistory) {
+        data.add(element.toJson());
+      }
+
+      var response = await post(
+        url,
+        headers: headers,
+        body: jsonEncode(data),
+      );
+
+      debugPrint("La requete a ete lance, voici le contenu : ${response.body}");
+      if (response.statusCode == 200) {
+        final responseData = json.decode(utf8.decode(response.body.codeUnits));
+        debugPrint(responseData.toString());
+
+        debugPrint(
+            "La requete a reussis, voici le contenu de la reponse : $responseData");
+        return responseData;
+      } else {
+        var responseData = json.decode(response.body);
+        debugPrint("La requete a echoue, voici le contenu : $responseData");
+        return 'Error';
+      }
+    } catch (e) {
+      return " $e";
+    }
+  }
 
   @override
   void initState() {
@@ -43,6 +126,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           duration: const Duration(milliseconds: 700),
           vsync: this,
         ),
+        function: null,
       );
       messageHistory.add(Messages(role: Role.user, content: text));
       setState(() {
@@ -50,7 +134,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       });
       message.animationController.forward();
       // await _sendMessageText();
-      final response = await chatCompleteWith();
+      final response = await chatAndAnwser();
+
       createChatResponse(response);
     }
   }
@@ -62,6 +147,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 700),
         vsync: this,
       ),
+      function: () async {
+        await displayFile(text);
+      },
     );
     messageHistory.add(Messages(role: Role.system, content: text));
     setState(() {
@@ -70,27 +158,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     message.animationController.forward();
   }
 
-  Future<String> chatCompleteWith() async {
-    final request = ChatCompleteText(
-      messages: messageHistory,
-      maxToken: 200,
-      model: GptTurboChatModel(),
-    );
-    String result = '';
-
-    final response = await openAI.onChatCompletion(request: request);
-
-    for (var element in response!.choices) {
-      result = result + element.message!.content;
-    }
-    return result;
-  }
-
   Future<void> _listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
+        debugLogging: true,
         onStatus: (val) {
-          print('onStatus: $val');
           if (val == 'done') {
             setState(() {
               _isListening = false;
@@ -98,7 +170,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             _handleSubmit(_text, true);
           }
         },
-        onError: (val) => print('onError: ${val.errorMsg}'),
+        onError: (val) => print('onError: ${val}'),
       );
       if (available) {
         setState(() => _isListening = true);
@@ -110,7 +182,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           onResult: (val) => setState(
             () {
               _text = val.recognizedWords;
-              print(_text);
             },
           ),
         );
@@ -118,7 +189,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     } else {
       setState(() => _isListening = false);
       _handleSubmit(_text, true);
-      print('Debug text :$_text');
       _speech.stop();
     }
   }
@@ -127,7 +197,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Energy Bot'),
+        title: const Text('Affiba'),
         backgroundColor: Colors.orange,
       ),
       body: SafeArea(
